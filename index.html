@@ -551,9 +551,8 @@
             flex-shrink: 0;
             margin: 10px 0;
             
-            /* --- Bug 2 修正 (v5 保留) --- */
-            position: relative; /* 確保 z-index 生效 */
-            z-index: 5;       /* 確保圖層高於圖片 (z-index: 3) */
+            position: relative; 
+            z-index: 5;       
         }
 
         /* 統一連結樣式 (EDM, Insta, List) */
@@ -652,14 +651,13 @@
             .tab-panel { 
                 width: 95vw; 
                 margin: 20px auto; 
-                /* --- Bug 1 修正 (v5 保留) --- */
                 min-height: auto; /* 讓面板高度自動貼合內容 */
             }
             .tab-panel .tab-content { 
                 padding: 20px 15px 15px 15px; 
             }
 
-            /* --- Bug 1 修正 (v6) --- */
+            /* --- v6 修正 (EDM/IG) --- */
             /* 移除手機版背景圖，改用純色，以貼合內容高度 */
             #edm.tab-panel {
                 background-image: none;
@@ -739,10 +737,20 @@
             .card-right p { font-size: 0.9em; }
 
 
-            /* --- REQ 5 & Bug 2 修正 --- */
+            /* --- v7 Bug 2 修正 --- */
             .list .tab-content { 
                 padding: 15px 5px; 
             }
+            .list-button-group {
+                /* 增加連結與圖片堆疊的間距 */
+                margin-top: 15px;    /* 連結和「上方」的圖片堆疊的間距 */
+                margin-bottom: 30px; /* 連結和「下方」的圖片堆疊的間距 */
+            }
+            /* 確保最後一個連結按鈕後面沒有多餘的 30px 間距 */
+            .list-button-group:last-of-type {
+                margin-bottom: 10px;
+            }
+
             .list-image-row {
                 flex-wrap: nowrap;
                 gap: 0;
@@ -750,9 +758,10 @@
                 justify-content: center;
                 align-items: center;
                 position: relative;
-                height: 300px; /* 【Bug 2 修正】高度從 250px 增加到 300px */
+                height: 300px; /* (v6 修正) 高度 300px */
                 margin: 0 auto;
-                margin-bottom: 15px; /* 【Bug 2 修正】增加圖片和連結的間距 */
+                /* 移除 margin-bottom，改由 .list-button-group 控制 */
+                margin-bottom: 0; 
                 cursor: pointer;
             }
             .list-image-row img {
@@ -1212,7 +1221,7 @@
             }
 
 
-            // --- REQ 5 修正 (榜單點擊事件) ---
+            // --- v7 Bug 1 修正 (榜單點擊事件) ---
             const listContent = document.getElementById('list')?.querySelector('.tab-content');
             if (listContent) {
                 listContent.addEventListener('click', function(e) {
@@ -1220,8 +1229,6 @@
                     const listRow = e.target.closest('.list-image-row');
                     if (!listRow) return;
 
-                    // --- Bug 2 修正 (v5 保留) ---
-                    // 如果點擊的目標是超連結 (a) 或在超連結內，就「不要」觸發畫廊
                     if (e.target.closest('a')) {
                         return;
                     }
@@ -1234,6 +1241,14 @@
                         startIndex = allImagesInRow.indexOf(clickedImg);
                         if (startIndex === -1) startIndex = 0;
                     }
+                    
+                    // --- v7 Bug 1 修正 ---
+                    // 判斷是否為手機版，如果是，強制從 0 開始
+                    const isMobile = window.innerWidth <= 768;
+                    if (isMobile) {
+                        startIndex = 0; 
+                    }
+                    // --- 修正結束 ---
                     
                     const galleryImageSources = allImagesInRow.map(img => {
                         const originalSrc = img.src;
