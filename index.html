@@ -737,14 +737,14 @@
             .card-right p { font-size: 0.9em; }
 
 
-            /* --- v8 修正 (榜單重疊) --- */
+            /* --- v9 修正 (榜單重疊) --- */
             .list .tab-content { 
                 padding: 15px 5px; 
             }
             .list-button-group {
                 /* 增加連結與圖片堆疊的間距 */
                 margin-top: 15px;    /* 連結和「上方」的圖片堆疊的間距 */
-                margin-bottom: 45px; /* 【v8 修正】連結和「下方」的圖片堆疊的間距 (30 -> 45) */
+                margin-bottom: 60px; /* 【v9 修正】連結和「下方」的圖片堆疊的間距 (45 -> 60) */
             }
             /* 確保最後一個連結按鈕後面沒有多餘的間距 */
             .list-button-group:last-of-type {
@@ -758,13 +758,13 @@
                 justify-content: center;
                 align-items: center;
                 position: relative;
-                height: 280px; /* 【v8 修正】高度縮小 (300 -> 280) */
+                height: 260px; /* 【v9 修正】高度縮小 (280 -> 260) */
                 margin: 0 auto;
                 margin-bottom: 0; 
                 cursor: pointer;
             }
             .list-image-row img {
-                width: 65%; /* 【v8 修正】圖片寬度縮小 (70 -> 65) */
+                width: 60%; /* 【v9 修正】圖片寬度縮小 (65 -> 60) */
                 height: auto;
                 flex-grow: 0;
                 min-width: 0;
@@ -1220,7 +1220,7 @@
             }
 
 
-            // --- v8 Bug 1 修正 (榜單點擊事件) ---
+            // --- v9 Bug 1 修正 (榜單點擊事件) ---
             const listContent = document.getElementById('list')?.querySelector('.tab-content');
             if (listContent) {
                 listContent.addEventListener('click', function(e) {
