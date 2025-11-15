@@ -551,7 +551,7 @@
             flex-shrink: 0;
             margin: 10px 0;
             
-            /* --- Bug 2 修正 --- */
+            /* --- Bug 2 修正 (v5 保留) --- */
             position: relative; /* 確保 z-index 生效 */
             z-index: 5;       /* 確保圖層高於圖片 (z-index: 3) */
         }
@@ -625,15 +625,15 @@
             
             :root {
                 --nav-height: 48px;
-                --content-default-height: 480px; /* 這個值現在影響不大，但保留 */
+                --content-default-height: 480px; 
                 --side-nav-width: 200px;
             }
             
             /* --- REQ 2 修正 (浮動 Logo RWD) --- */
             #fixed-nav-container {
-                left: 10px; /* 【修正】固定在左側 10px */
+                left: 10px; 
                 top: 37.5vh;
-                transform: translateY(-50%); /* 【修正】移除水平 transform (固定左側, 向右展開) */
+                transform: translateY(-50%); 
             }
             #fixed-nav-container.is-open {
                 width: calc(87px + var(--side-nav-width) + var(--side-nav-padding));
@@ -641,7 +641,7 @@
             
             /* RWD 2x2 按鈕 */
             .side-nav-item {
-                height: 30px; /* 手機版按鈕高度 */
+                height: 30px; 
             }
 
 
@@ -652,44 +652,68 @@
             .tab-panel { 
                 width: 95vw; 
                 margin: 20px auto; 
-                /* --- Bug 1 修正 --- */
+                /* --- Bug 1 修正 (v5 保留) --- */
                 min-height: auto; /* 讓面板高度自動貼合內容 */
             }
             .tab-panel .tab-content { 
                 padding: 20px 15px 15px 15px; 
             }
 
-            /* --- Bug 1 修正 (恢復為垂直堆疊) --- */
-            /* 恢復 EDM/IG 為手機版的垂直堆疊，解決空白問題 */
+            /* --- Bug 1 修正 (v6) --- */
+            /* 移除手機版背景圖，改用純色，以貼合內容高度 */
+            #edm.tab-panel {
+                background-image: none;
+                background-color: var(--color-edm);
+            }
+            #insta.tab-panel {
+                background-image: none;
+                background-color: var(--color-instagram);
+            }
+
+            /* 恢復 EDM/IG 為 v4 的左右排版 (您要的) */
             .edm .tab-content,
             .insta .tab-content {
-                flex-direction: column; /* 恢復垂直排版 */
-                gap: 15px;
+                flex-direction: row; 
+                gap: 10px; 
+                padding: 15px 10px;
             }
             .edm-left, .insta-left {
-                flex: 0 0 auto;
-                width: 100%;
-                height: auto;
-                max-height: 250px; /* 給一個最大高度 */
+                flex: 0 0 40%; 
+                width: 40%;
+                height: auto; 
+                max-height: none; 
             }
             .edm-left img, .insta-left img {
-                object-fit: contain; /* 確保圖片在區塊內完整顯示 */
+                object-fit: contain; /* 確保 logo 完整顯示 */
+                height: 100%; /* 填滿 flex 容器 */
             }
             .edm-right, .insta-right {
-                flex: 1;
-                width: 100%;
+                flex: 1; 
+                width: auto;
                 padding-right: 0;
                 overflow-y: visible;
+                justify-content: space-around; /* 垂直分散內容 */
             }
             .edm-header h2, .insta-header h2 { 
-                font-size: 1.5em; /* 恢復手機版字體大小 */
-                text-align: center; /* 標題置中 */
+                font-size: 1.1em; /* 縮小字體 */
+                margin-bottom: 5px;
+                text-align: center;
+            }
+            .edm-bottom-content img, .insta-bottom-content img {
+                margin-top: 10px;
             }
             
+            /* 統一縮小字體 */
             .list-button-group a,
             .edm-bottom-content a,
             .insta-bottom-content a {
-                font-size: 1.2em; /* 恢復手機版字體大小 */
+                font-size: 0.9em; 
+                padding: 5px 0;
+            }
+            .list-button-group a::before,
+            .edm-bottom-content a::before,
+            .insta-bottom-content a::before {
+                margin-right: 5px;
             }
 
             /* --- REQ 4 修正 (分校資訊 RWD) --- */
@@ -715,7 +739,7 @@
             .card-right p { font-size: 0.9em; }
 
 
-            /* --- REQ 5 修正 (榜單 RWD) --- */
+            /* --- REQ 5 & Bug 2 修正 --- */
             .list .tab-content { 
                 padding: 15px 5px; 
             }
@@ -726,8 +750,9 @@
                 justify-content: center;
                 align-items: center;
                 position: relative;
-                height: 250px;
+                height: 300px; /* 【Bug 2 修正】高度從 250px 增加到 300px */
                 margin: 0 auto;
+                margin-bottom: 15px; /* 【Bug 2 修正】增加圖片和連結的間距 */
                 cursor: pointer;
             }
             .list-image-row img {
@@ -1195,7 +1220,7 @@
                     const listRow = e.target.closest('.list-image-row');
                     if (!listRow) return;
 
-                    // --- Bug 2 修正 ---
+                    // --- Bug 2 修正 (v5 保留) ---
                     // 如果點擊的目標是超連結 (a) 或在超連結內，就「不要」觸發畫廊
                     if (e.target.closest('a')) {
                         return;
