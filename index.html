@@ -203,9 +203,8 @@
             box-sizing: border-box;
             color: var(--text-light);
             
-            /* --- REQ 3 修正 --- */
-            background-size: cover; /* 從 100% 100% (變形) 改為 cover (保持比例) */
-            background-position: center center; /* 確保從中間裁切 */
+            background-size: cover; 
+            background-position: center center; 
             background-repeat: no-repeat;
 
             scroll-margin-top: 20px;
@@ -478,7 +477,6 @@
             border-color: var(--color-list);
         }
 
-        /* --- REQ 5 新增 --- */
         /* 榜單畫廊 (Gallery Modal) 專用樣式 */
         #gallery-modal .modal-content {
             max-width: 800px; /* 畫廊可以寬一點 */
@@ -552,6 +550,10 @@
             text-align: center;
             flex-shrink: 0;
             margin: 10px 0;
+            
+            /* --- Bug 2 修正 --- */
+            position: relative; /* 確保 z-index 生效 */
+            z-index: 5;       /* 確保圖層高於圖片 (z-index: 3) */
         }
 
         /* 統一連結樣式 (EDM, Insta, List) */
@@ -623,7 +625,7 @@
             
             :root {
                 --nav-height: 48px;
-                --content-default-height: 480px;
+                --content-default-height: 480px; /* 這個值現在影響不大，但保留 */
                 --side-nav-width: 200px;
             }
             
@@ -646,47 +648,48 @@
             .site-content { padding-top: 2vh; padding-bottom: 60px; }
             .floating-module { width: 95vw; margin-bottom: 0; }
             .quick-links { width: 95vw; margin-bottom: 40px; }
-            .tab-panel { width: 95vw; margin: 20px auto; }
-            .tab-panel .tab-content { padding: 20px 15px 15px 15px; }
+            
+            .tab-panel { 
+                width: 95vw; 
+                margin: 20px auto; 
+                /* --- Bug 1 修正 --- */
+                min-height: auto; /* 讓面板高度自動貼合內容 */
+            }
+            .tab-panel .tab-content { 
+                padding: 20px 15px 15px 15px; 
+            }
 
-            /* --- REQ 6 修正 (EDM/IG RWD) --- */
+            /* --- Bug 1 修正 (恢復為垂直堆疊) --- */
+            /* 恢復 EDM/IG 為手機版的垂直堆疊，解決空白問題 */
             .edm .tab-content,
             .insta .tab-content {
-                flex-direction: row;
-                gap: 10px;
-                padding: 15px 10px;
+                flex-direction: column; /* 恢復垂直排版 */
+                gap: 15px;
             }
             .edm-left, .insta-left {
-                flex: 0 0 40%;
-                width: 40%;
+                flex: 0 0 auto;
+                width: 100%;
                 height: auto;
-                max-height: none;
+                max-height: 250px; /* 給一個最大高度 */
+            }
+            .edm-left img, .insta-left img {
+                object-fit: contain; /* 確保圖片在區塊內完整顯示 */
             }
             .edm-right, .insta-right {
                 flex: 1;
-                width: auto;
+                width: 100%;
                 padding-right: 0;
                 overflow-y: visible;
-                justify-content: space-around;
             }
             .edm-header h2, .insta-header h2 { 
-                font-size: 1.1em;
-                margin-bottom: 5px;
-            }
-            .edm-bottom-content img, .insta-bottom-content img {
-                margin-top: 10px;
+                font-size: 1.5em; /* 恢復手機版字體大小 */
+                text-align: center; /* 標題置中 */
             }
             
             .list-button-group a,
             .edm-bottom-content a,
             .insta-bottom-content a {
-                font-size: 0.9em;
-                padding: 5px 0;
-            }
-            .list-button-group a::before,
-            .edm-bottom-content a::before,
-            .insta-bottom-content a::before {
-                margin-right: 5px;
+                font-size: 1.2em; /* 恢復手機版字體大小 */
             }
 
             /* --- REQ 4 修正 (分校資訊 RWD) --- */
@@ -699,11 +702,11 @@
             .card-left {
                 flex: 0 0 auto;
                 width: 100%;
-                height: auto; /* 【修正】讓高度自動 */
-                max-height: none; /* 【修正】移除 max-height */
+                height: auto; 
+                max-height: none; 
             }
             .card-left img {
-                height: auto; /* 【修正】讓高度自動 */
+                height: auto; 
                 width: 100%;
                 object-fit: contain;
             }
@@ -987,7 +990,7 @@
             const logoBtn = document.getElementById('fixed-logo-btn');
             
             let isMobileMode = false;
-            let wasMobile = null; /* --- JS 邏輯修正: 初始值設為 null --- */
+            let wasMobile = null; 
 
             const handleNavClick = (e) => {
                 e.preventDefault();
@@ -999,8 +1002,6 @@
             function checkNavMode() {
                 isMobileMode = window.innerWidth <= 768;
 
-                // --- JS 邏輯修正: 確保初次載入 (wasMobile === null) 
-                // --- 或 模式切換 (isMobileMode !== wasMobile) 時，都會執行
                 if (isMobileMode !== wasMobile) { 
                     
                     if (isMobileMode) {
@@ -1009,7 +1010,6 @@
                         logoContainer.removeEventListener('mouseleave', handleNavLeave);
                         logoBtn.addEventListener('click', handleNavClick);
                         
-                        // 手機模式下，如果點擊抽屜外部，也應該關閉
                         document.addEventListener('click', (e) => {
                             if (isMobileMode && logoContainer.classList.contains('is-open') && !logoContainer.contains(e.target)) {
                                 logoContainer.classList.remove('is-open');
@@ -1024,7 +1024,7 @@
                         logoContainer.classList.remove('is-open');
                     }
                     
-                    wasMobile = isMobileMode; /* --- JS 邏輯修正: 在執行後才更新狀態 --- */
+                    wasMobile = isMobileMode; 
                 }
             }
             
@@ -1194,6 +1194,12 @@
                     
                     const listRow = e.target.closest('.list-image-row');
                     if (!listRow) return;
+
+                    // --- Bug 2 修正 ---
+                    // 如果點擊的目標是超連結 (a) 或在超連結內，就「不要」觸發畫廊
+                    if (e.target.closest('a')) {
+                        return;
+                    }
 
                     const clickedImg = e.target.closest('img');
                     const allImagesInRow = Array.from(listRow.querySelectorAll('img'));
